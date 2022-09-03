@@ -1,12 +1,12 @@
 from django.contrib import admin
 from product.models import *
 # Register your models here.
-class Prudact_admin(admin.ModelAdmin):
+class product_admin(admin.ModelAdmin):
     list_display =('title','price','count')
     filter_horizontal = ['category','image']
     
 
-admin.site.register(Product, admin_class=Prudact_admin)
+admin.site.register(Product, admin_class=product_admin)
 
 
 class Order_substitute_admin(admin.ModelAdmin):

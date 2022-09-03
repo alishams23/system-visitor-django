@@ -2,6 +2,7 @@
 from itertools import product
 from tabnanny import check
 from django.db import models
+from extensions.utils import jalali_converter
 
 
 # Create your models here.
@@ -40,7 +41,7 @@ class Product(models.Model):
 
 
 class Order_substitute(models.Model):
-    prudact = models.ForeignKey(Product,verbose_name="محصول", on_delete=models.CASCADE)
+    product = models.ForeignKey(Product,verbose_name="محصول", on_delete=models.CASCADE)
     count = models.IntegerField(verbose_name="تعداد",default=1)
 
 
@@ -56,6 +57,10 @@ class Order(models.Model):
     class Meta:
         verbose_name = "سبد خرید"
         verbose_name_plural = "سبدهای خرید"
+    
+    def jpublish(self):
+        return jalali_converter(self.Order_time)
+
 
 
 

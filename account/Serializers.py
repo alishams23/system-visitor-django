@@ -1,3 +1,4 @@
+from dataclasses import field, fields
 from pyexpat import model
 from django.core.exceptions import ValidationError
 from rest_framework.validators import UniqueValidator
@@ -41,15 +42,22 @@ class UsersRegister_serializer(serializers.ModelSerializer):
             raise ValidationError("Username must don't have character")
         return username.lower()
 
-class User_retrieve_serializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        exclude = ['password','email']
+
+
+
+
 
 
 
 class Customer_panel_serializer(serializers.ModelSerializer):
+   
     class Meta:
         model = Customer_panel
         fields = '__all__'
+
+class User_retrieve_serializer(serializers.ModelSerializer):
+    customer = Customer_panel_serializer(many=True)
+    class Meta:
+        model = User
+        exclude = ['password','email']
         

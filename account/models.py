@@ -1,9 +1,8 @@
-from itertools import product
-from unicodedata import category
+
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
-from product.models import Order
+
 
 # Create your models here.
 class Customer_panel(models.Model):
@@ -13,7 +12,6 @@ class Customer_panel(models.Model):
     History_purchase = models.DateField(verbose_name="تاریخچه خرید")
     account_banance = models.BigIntegerField(verbose_name="مانده حساب")
     history_payment = models.DateField(verbose_name="تاریخچه پرداخت")
-    cart = models.ManyToManyField(Order,verbose_name="سبدخرید")
     addres = models.TextField(verbose_name="آدرس",blank=True,null=True)
     name_shop = models.TextField(verbose_name="نام فروشگاه",blank=True,null=True)
     first_name= models.TextField(verbose_name="نام ",blank=True,null=True)
