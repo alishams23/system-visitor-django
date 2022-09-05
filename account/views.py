@@ -17,7 +17,7 @@ class UserCreate(generics.CreateAPIView):
         return response
 
 class User_retrieve(generics.RetrieveAPIView):
-    lookup_field="customer"
+    lookup_field="username"
     queryset = User.objects.all()
     serializer_class =  User_retrieve_serializer
 
