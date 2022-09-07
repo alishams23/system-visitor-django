@@ -56,6 +56,9 @@ class Customer_panel_serializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class User_retrieve_serializer(serializers.ModelSerializer):
+    def getFullName(self, obj):
+        return f"{obj.first_name + ' ' + obj.last_name}"
+    get_full_name = serializers.SerializerMethodField("getFullName")
     customer = Customer_panel_serializer(many=True)
     class Meta:
         model = User
