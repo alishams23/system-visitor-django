@@ -6,6 +6,7 @@ from product.Serializers import Order_serializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from product.models import Order
 
 # Create your views here.
 class Visitor_retrieve(generics.RetrieveAPIView):
