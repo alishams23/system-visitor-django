@@ -31,11 +31,11 @@ class Visitor_registrations_list(generics.ListAPIView):
         result = Order.objects.filter(is_payed = True,visitor_id=id )
         return result
 
-class is_registered(APIView):
+class confirm_Order(APIView):
 
     def get(self, request, *args, **kwargs):
         id = kwargs.get('pk', 'Default Value if not there')
         data = Order.objects.get(id=id)
-        data.check_Accountants = True
+        data.check_Accountants = not data.check_Accountants
         data.save()
         return Response(status=status.HTTP_200_OK)
