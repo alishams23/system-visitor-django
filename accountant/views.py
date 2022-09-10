@@ -27,8 +27,8 @@ class Visitor_registrations_list(generics.ListAPIView):
     serializer_class = Order_serializer
 
     def get_queryset(self):
-        id = self.kwargs.get('pk', 'Default Value if not there')
-        result = Order.objects.filter(is_payed = True,visitor_id=id )
+        username = self.kwargs.get('username', 'Default Value if not there')
+        result = Order.objects.filter(is_payed = True,visitor__username=username )
         return result
 
 class confirm_Order(APIView):
