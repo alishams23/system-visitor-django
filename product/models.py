@@ -1,6 +1,7 @@
 
 from itertools import product
 from tabnanny import check
+from django.utils import timezone
 from django.db import models
 from extensions.utils import jalali_converter
 
@@ -8,6 +9,7 @@ from extensions.utils import jalali_converter
 # Create your models here.
 class Image(models.Model):
     photo = models.ImageField(verbose_name="عکس")
+    description = models.TextField(verbose_name="متن")
 
     def __str__(self):
         return f"{self.pk}--{self.photo}"
@@ -43,16 +45,25 @@ class Product(models.Model):
 class Order_substitute(models.Model):
     product = models.ForeignKey(Product,verbose_name="محصول", on_delete=models.CASCADE)
     count = models.IntegerField(verbose_name="تعداد",default=1)
+    def __str__(self):
+        return f"{self.pk}--{self.product}"
+    
+    class Meta:
+        verbose_name = "محصول سبد خرید"
+        verbose_name_plural = " محصولات سبد خرید"
+    
 
 
 class Order(models.Model):
-    products=models.ManyToManyField(Order_substitute,blank=True)
-    Order_time = models.DateTimeField(verbose_name="زمان ثبت خرید",auto_now=True)
+    products=models.ManyToManyField(Order_substitute,verbose_name="محصولات",blank=True)
+    Order_time = models.DateField(verbose_name="زمان ثبت خرید",default=timezone.now)
     visitor = models.ForeignKey("account.User", on_delete=models.CASCADE,verbose_name="یوزر",blank=True,null=True)
-    customer=models.ForeignKey("account.Customer_panel", on_delete=models.CASCADE,blank=True,null=True)
-    is_payment_cash = models.BooleanField(default=True)
-    is_payed=models.BooleanField(default=False)
-    check_Accountants = models.BooleanField(default=False)
+    customer=models.ForeignKey("account.Customer_panel", on_delete=models.CASCADE,verbose_name="مشتری",blank=True,null=True)
+    is_payment_cash = models.BooleanField(default=True,verbose_name="پرداخت نقد")
+    is_payed=models.BooleanField(default=False,verbose_name="پرداخت شده")
+    check_Accountants = models.BooleanField(default=False,verbose_name="چک شده توسط حسابدار")
+    
+
 
     class Meta:
         verbose_name = "سبد خرید"
