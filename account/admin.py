@@ -4,7 +4,6 @@ from jalali_date import datetime2jalali, date2jalali
 from jalali_date.admin import ModelAdminJalaliMixin
 
 # Register your models here.
-
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import User
@@ -18,6 +17,16 @@ UserAdmin.fieldsets += (
 )
 class User_admin(admin.ModelAdmin):
     list_display = ( 'username','id')
+    search_fields = (
+     "user_type",
+     "customer",
+     "code",
+    )
+
+    list_filter = [
+    "user_type",
+
+    ]
 
 admin.site.register(User, User_admin)
 
@@ -29,5 +38,6 @@ class Customer_panel_admin(ModelAdminJalaliMixin,admin.ModelAdmin):
         "first_name",
         "last_name",
     )
+
     
 admin.site.register(Customer_panel, admin_class=Customer_panel_admin)

@@ -9,7 +9,7 @@ from extensions.utils import jalali_converter
 # Create your models here.
 class Image(models.Model):
     photo = models.ImageField(verbose_name="عکس")
-    description = models.TextField(verbose_name="متن")
+    description = models.TextField(verbose_name="متن",blank=True)
 
     def __str__(self):
         return f"{self.pk}--{self.photo}"
