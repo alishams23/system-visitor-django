@@ -6,6 +6,8 @@ from .models import *
 from account.models import *
 from account.Serializers import User_retrieve_serializer,Customer_panel_serializer
 from extensions.utils import jalali_converter
+from jalali_date import datetime2jalali, date2jalali
+
 
 
 
@@ -36,7 +38,7 @@ class Order_substitute_serializer(serializers.ModelSerializer):
 
 class Order_serializer(serializers.ModelSerializer):
     def Jalali_converter_function(self, obj):
-        return f"{jalali_converter(obj.Order_time)}"
+        return f"{date2jalali(obj.Order_time).strftime('%y/%m/%d ')}"
     Order_time_jalali = serializers.SerializerMethodField("Jalali_converter_function")
     products =  Order_substitute_serializer(many=True)
     visitor = User_retrieve_serializer()
