@@ -12,7 +12,7 @@ class Image(models.Model):
     description = models.TextField(verbose_name="متن",blank=True)
 
     def __str__(self):
-        return f"{self.pk}--{self.photo}"
+        return f"{self.pk}--{self.photo}--{self.description}"
     class Meta:
         verbose_name = "عکس"
         verbose_name_plural = "عکس ها"
