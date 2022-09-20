@@ -13,14 +13,13 @@ UserAdmin.fieldsets += (
         "fields": (
             'user_type',
             'special_user',
-            'customer',
             'code',
            
         ),
     }),
 )
 
-UserAdmin.list_display += ( 'username','id')
+# UserAdmin.list_display += ( 'username','id')
 UserAdmin.list_filter += ('user_type', )
 
 admin.site.register(User, UserAdmin)
