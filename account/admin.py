@@ -10,14 +10,20 @@ from .models import User
 UserAdmin.fieldsets += (
     ('فیلد های خاص من', {
         "fields": (
+            'user_type',
             'special_user',
+            'customer',
+            'code',
+           
         ),
     }),
 )
-class User_admin(admin.ModelAdmin):
-    list_display = ( 'username','id')
 
-admin.site.register(User, User_admin)
+UserAdmin.list_display += ( 'username','id')
+# UserAdmin.list_filter += ('date_joined', )
+
+admin.site.register(User, UserAdmin)
+
 
 
 class Customer_panel_admin(admin.ModelAdmin):
