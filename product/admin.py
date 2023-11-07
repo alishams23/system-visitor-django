@@ -40,7 +40,7 @@ class Order_admin(admin.ModelAdmin):
         "customer__last_name",
     )
     list_filter = [
-         "is_payment_cash",
+         "payment_method",
          "is_payed",
          "check_Accountants",
          "visitor",

@@ -51,4 +51,4 @@ class Update_order_serializers(serializers.ModelSerializer):
     class Meta:
 
         model = Order
-        fields = ('is_payment_cash','is_payed')
+        fields = ('payment_method','is_payed')

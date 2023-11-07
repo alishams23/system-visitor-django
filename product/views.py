@@ -33,13 +33,12 @@ class Order_retrieve(generics.ListAPIView):
     serializer_class = Order_serializer
     def get_queryset(self):
         id = int(self.kwargs.get('pk', 'Default Value if not there'))
-        result = Order.objects.filter(is_payed = False,customer__code=id)
-        
-        if len(result) == 0 :
-            data = Order.objects.create(customer = Customer_panel.objects.get(code=id))
-            data.save()
-            return Order.objects.filter(is_payed = False,customer__code=id)
+        result = Order.objects.filter(is_payed = False,customer__code=id,visitor=self.request.user)
         print(result)
+        if len(result) == 0 :
+            data = Order.objects.create(customer = Customer_panel.objects.get(code=id),visitor=self.request.user)
+            data.save()
+            return Order.objects.filter(is_payed = False,customer__code=id,visitor=self.request.user)
         return result
 
 class History_purchase_list(generics.ListAPIView): 
@@ -47,17 +46,26 @@ class History_purchase_list(generics.ListAPIView):
 
     def get_queryset(self):
         id = self.kwargs.get('pk', 'Default Value if not there')
-        result = Order.objects.filter(is_payed = True,customer__code=id )
+        result = Order.objects.filter(is_payed = True,customer__code=id ).order_by('-pk')
+        return result
+
+class History_purchase_list_visitor(generics.ListAPIView): 
+    serializer_class = Order_serializer
+
+    def get_queryset(self):
+        id = self.kwargs.get('pk', 'Default Value if not there')
+        visitor_username = self.kwargs.get('visitor', 'Default Value if not there')
+        result = Order.objects.filter(is_payed = True,customer__code=id,visitor__username = visitor_username ,  ).order_by('-pk')
         return result
 
 
 class confirmation_Buy(APIView):
 
     def post(self, request, format=None):
-        is_payment_cash = request.data.get('is_payment_cash') 
+        payment_method = request.data.get('payment_method') 
         pk = request.data.get('pk') 
         data = Order.objects.get(id = pk)
-        data.is_payment_cash = is_payment_cash
+        data.payment_method = payment_method
         data.is_payed = True
         data.save()
         return Response(status=status.HTTP_200_OK)
@@ -70,7 +78,7 @@ class add_product_to_order(APIView):
         count = self.kwargs.get('count', 'Default Value if not there')
         order_data = Order.objects.filter(is_payed = False,customer__code=customer)
         if len(order_data) == 0 :  
-            data = Order.objects.create(customer = Customer_panel.objects.get(code=customer))
+            data = Order.objects.create(customer = Customer_panel.objects.get(code=customer),visitor=request.user)
             data.save()
             order_data = Order.objects.filter(is_payed = False,customer__code=customer)
         order_data = order_data[0]
@@ -80,13 +88,17 @@ class add_product_to_order(APIView):
                 item.count += count
                 item.save()
                 return Response(status=status.HTTP_200_OK)
-
-        Order_substitute_data=Order_substitute.objects.create(product=Product.objects.get(id=product),count=count)
+        Product_substitute_data = Product.objects.get(id=product)
+        Order_substitute_data=Order_substitute.objects.create(product=Product_substitute_data,count=count)
         Order_substitute_data.save()
-        print(Order_substitute_data)
         order_data.products.add(Order_substitute_data)
         order_data.save()
+        # decrease count of product     
+        Product_substitute_data.count =  Product_substitute_data.count - count
+        Product_substitute_data.save()
         return Response(status=status.HTTP_200_OK)
+    
+
 class Order_retrieve_2(generics.RetrieveAPIView):
     lookup_field = "pk"
     queryset = Order.objects.all()
@@ -97,15 +109,14 @@ class Update_order(generics.UpdateAPIView):
     lookup_field="pk"
     serializer_class = Update_order_serializers
     queryset = Order.objects.all()
-    def perform_update(self, serializer):
-        data = Order.objects.get(id=self.kwargs.get("pk"))
-        for x in data.products.all():
-            x.product.count -= x.count
-            x.product.save()
-        return super().perform_update(serializer)
 
 
 class delete_order_product(generics.DestroyAPIView):
     lookup_field = "pk"
     serializer_class = Order_substitute_serializer
     queryset = Order_substitute.objects.all()
+    def perform_destroy(self, instance):
+        product_instance = instance.product
+        product_instance.count +=  instance.count
+        product_instance.save()
+        return super().perform_destroy(instance)

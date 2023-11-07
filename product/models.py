@@ -55,11 +55,18 @@ class Order_substitute(models.Model):
 
 
 class Order(models.Model):
+    PAYMENT_CHOICE = (
+    ('m', 'نقد'),
+    ('c', 'چک'),
+    ('b', 'هر دو'),
+    )
+    payment_method = models.CharField(max_length=1, choices=PAYMENT_CHOICE,blank=True,null=True,verbose_name="نوع پرداخت")
+
     products=models.ManyToManyField(Order_substitute,verbose_name="محصولات",blank=True)
     Order_time = models.DateField(verbose_name="زمان ثبت خرید",default=timezone.now)
-    visitor = models.ForeignKey("account.User", on_delete=models.CASCADE,verbose_name="یوزر",blank=True,null=True)
+    visitor = models.ForeignKey("account.User", on_delete=models.CASCADE,verbose_name="ویزیتور",blank=True,null=True)
     customer=models.ForeignKey("account.Customer_panel", on_delete=models.CASCADE,verbose_name="مشتری",blank=True,null=True)
-    is_payment_cash = models.BooleanField(default=True,verbose_name="پرداخت نقد")
+
     is_payed=models.BooleanField(default=False,verbose_name="پرداخت شده")
     check_Accountants = models.BooleanField(default=False,verbose_name="چک شده توسط حسابدار")
     
