@@ -76,15 +76,19 @@ class add_product_to_order(APIView):
         customer = self.kwargs.get('customer', 'Default Value if not there')
         product = self.kwargs.get('product', 'Default Value if not there')
         count = self.kwargs.get('count', 'Default Value if not there')
-        order_data = Order.objects.filter(is_payed = False,customer__code=customer)
+        order_data = Order.objects.filter(is_payed = False,customer__code=customer,visitor= self.request.user)
+ 
         if len(order_data) == 0 :  
+
             data = Order.objects.create(customer = Customer_panel.objects.get(code=customer),visitor=request.user)
             data.save()
             order_data = Order.objects.filter(is_payed = False,customer__code=customer)
         order_data = order_data[0]
+   
         for item in order_data.products.all():
-
+          
             if item.product.id == product:
+                print('1')
                 item.count += count
                 item.save()
                 return Response(status=status.HTTP_200_OK)
