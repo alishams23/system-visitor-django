@@ -28,7 +28,7 @@ class Visitor_registrations_list(generics.ListAPIView):
 
     def get_queryset(self):
         username = self.kwargs.get('username', 'Default Value if not there')
-        result = Order.objects.filter(visitor__username=username )
+        result = Order.objects.filter(visitor__username=username,is_payed = True )
         return result
 
 class confirm_Order(APIView):
